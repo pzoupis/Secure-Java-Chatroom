@@ -31,6 +31,8 @@ public class UserHandler implements Runnable{
             inputStream = new ObjectInputStream(sslSocket.getInputStream());
             client = (Client) inputStream.readObject();
             connections.addClient(client);
+            System.out.println("User " + client.getNickName() + " entered the chatroom with I2P Destination: \n" + client.getI2PDestination());
+            System.out.println("Total number of active users is " + connections.getAvailableClients().size());
             message = new Message();
             message.setMessageType("availableClients");
             message.setAvailableClients(connections.getAvailableClients());
@@ -47,6 +49,7 @@ public class UserHandler implements Runnable{
                 }
             }while(!message.getMessageType().equals("disconnect"));
             connections.deleteClient(client);
+            System.out.println("User " + client.getNickName() + " disconnected.");
             outputStream.close();
             inputStream.close();
             sslSocket.close();

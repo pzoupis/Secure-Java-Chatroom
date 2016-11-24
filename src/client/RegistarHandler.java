@@ -15,9 +15,11 @@ public class RegistarHandler implements Runnable{
     private Client client;
     private Message message;
     private SSLClientHandler sslClientHandler;
+    private I2PHandler i2PHandler;
     
-    public RegistarHandler(SSLClientHandler sslClientHandler){
+    public RegistarHandler(SSLClientHandler sslClientHandler, I2PHandler i2pHandler){
         this.sslClientHandler = sslClientHandler;
+        this.i2PHandler = i2pHandler;
     }
 
     @Override
@@ -25,9 +27,8 @@ public class RegistarHandler implements Runnable{
         try {
             outputStream = new ObjectOutputStream(sslClientHandler.getSSLSocket().getOutputStream());
             inputStream = new ObjectInputStream(sslClientHandler.getSSLSocket().getInputStream());
-            String nickName = JOptionPane.showInputDialog("Nickname");
-            String i2pDestination = JOptionPane.showInputDialog("I2PDestination");
-            client = new Client(nickName, i2pDestination);
+            String nickName = JOptionPane.showInputDialog("Enter your nickname");
+            client = new Client(nickName, i2PHandler.getI2PDestination());
             MainWindow mainWindow = new MainWindow();
             outputStream.writeObject(client);
             message = (Message) inputStream.readObject();
