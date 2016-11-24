@@ -14,17 +14,17 @@ public class RegistarHandler implements Runnable{
     private ObjectInputStream inputStream;
     private Client client;
     private Message message;
-    private ConnectionHandler connectionHandler;
+    private SSLClientHandler sslClientHandler;
     
-    public RegistarHandler(ConnectionHandler connectionHandler){
-        this.connectionHandler = connectionHandler;
+    public RegistarHandler(SSLClientHandler sslClientHandler){
+        this.sslClientHandler = sslClientHandler;
     }
 
     @Override
     public void run() {
         try {
-            outputStream = new ObjectOutputStream(connectionHandler.getSocket().getOutputStream());
-            inputStream = new ObjectInputStream(connectionHandler.getSocket().getInputStream());
+            outputStream = new ObjectOutputStream(sslClientHandler.getSSLSocket().getOutputStream());
+            inputStream = new ObjectInputStream(sslClientHandler.getSSLSocket().getInputStream());
             String nickName = JOptionPane.showInputDialog("Nickname");
             String i2pDestination = JOptionPane.showInputDialog("I2PDestination");
             client = new Client(nickName, i2pDestination);
@@ -42,7 +42,7 @@ public class RegistarHandler implements Runnable{
             outputStream.writeObject(message);
             inputStream.close();
             outputStream.close();
-            connectionHandler.getSocket().close();
+            sslClientHandler.getSSLSocket().close();
             System.exit(0);
         } catch (IOException ex) {
             Logger.getLogger(RegistarHandler.class.getName()).log(Level.SEVERE, null, ex);

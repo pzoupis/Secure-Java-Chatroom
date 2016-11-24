@@ -3,32 +3,32 @@ package server;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLSocket;
 import shared.Client;
 import shared.Message;
 
 public class UserHandler implements Runnable{
-    private final Socket socket;
+    private final SSLSocket sslSocket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private Message message;
     private Client client;
     private ServerConnections connections;
     
-    public UserHandler(Socket socket, ServerConnections connections){
-        this.socket = socket;
+    public UserHandler(SSLSocket sslSocket, ServerConnections connections){
+        this.sslSocket = sslSocket;
         this.connections = connections;
     }
     
     @Override
     public void run() {
         try {
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-            inputStream = new ObjectInputStream(socket.getInputStream());
+            outputStream = new ObjectOutputStream(sslSocket.getOutputStream());
+            inputStream = new ObjectInputStream(sslSocket.getInputStream());
             client = (Client) inputStream.readObject();
             connections.addClient(client);
             message = new Message();
@@ -49,7 +49,7 @@ public class UserHandler implements Runnable{
             connections.deleteClient(client);
             outputStream.close();
             inputStream.close();
-            socket.close();
+            sslSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
