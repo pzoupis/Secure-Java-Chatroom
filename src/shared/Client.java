@@ -25,6 +25,6 @@ public class Client implements Serializable{
     }
     @Override
     public String toString(){
-        return "User: " + this.nickName + " with i2pDestination\n" + this.i2pDestination;
+        return this.nickName;
     }
 }

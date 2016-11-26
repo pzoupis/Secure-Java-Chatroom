@@ -38,7 +38,7 @@ public class SSLServerHandler {
             keyStore.load(new FileInputStream(keyStoreName), keyStorePassword);
             keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
             keyManagerFactory.init(keyStore, keyStorePassword);
-            sslContext = SSLContext.getInstance("TLS");
+            sslContext = SSLContext.getInstance("TLSv1.2");
             trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
             trustManagerFactory.init(keyStore);
             sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);

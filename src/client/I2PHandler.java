@@ -23,4 +23,7 @@ public class I2PHandler {
     public String getI2PDestination(){
         return i2pDestination;
     }
+    public I2PSocketManager getManager(){
+        return this.manager;
+    }
 }

@@ -9,6 +9,14 @@ public class Message implements Serializable{
     public Message(){
         
     }
+    public Message(String message){
+        this.message = message;
+    }
+    public Message(String messageType, String message){
+        this.messageType = messageType;
+        this.message = message;
+    }
+    
     public String getMessageType() {
         return messageType;
     }

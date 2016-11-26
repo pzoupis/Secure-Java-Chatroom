@@ -20,6 +20,6 @@ public class Registar {
             } catch (IOException ex) {
                 Logger.getLogger(Registar.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }while(connections.getAvailableClients().isEmpty());
+        }while(true);
     }
 }

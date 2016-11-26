@@ -14,22 +14,22 @@ public class RegistarHandler implements Runnable{
     private ObjectInputStream inputStream;
     private Client client;
     private Message message;
-    private SSLClientHandler sslClientHandler;
-    private I2PHandler i2PHandler;
+    private final SSLClientHandler sslClientHandler;
+    private final I2PHandler i2pHandler;
     
     public RegistarHandler(SSLClientHandler sslClientHandler, I2PHandler i2pHandler){
         this.sslClientHandler = sslClientHandler;
-        this.i2PHandler = i2pHandler;
+        this.i2pHandler = i2pHandler;
     }
 
     @Override
     public void run() {
         try {
-            outputStream = new ObjectOutputStream(sslClientHandler.getSSLSocket().getOutputStream());
-            inputStream = new ObjectInputStream(sslClientHandler.getSSLSocket().getInputStream());
+            outputStream = new ObjectOutputStream(sslClientHandler.getSocket().getOutputStream());
+            inputStream = new ObjectInputStream(sslClientHandler.getSocket().getInputStream());
             String nickName = JOptionPane.showInputDialog("Enter your nickname");
-            client = new Client(nickName, i2PHandler.getI2PDestination());
-            MainWindow mainWindow = new MainWindow();
+            client = new Client(nickName, i2pHandler.getI2PDestination());
+            MainWindow mainWindow = new MainWindow(i2pHandler);
             outputStream.writeObject(client);
             message = (Message) inputStream.readObject();
             while(!mainWindow.disconnectFromRegistar()){

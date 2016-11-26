@@ -15,18 +15,21 @@ import shared.Client;
 
 public class MainWindow {
 
-    private JFrame frame;
-    private JPanel panel;
-    private JLabel label;
-    private JButton btnDisconnect;
-    private JButton btnChat;
-    private DefaultListModel defaultListModel;
+    private final JFrame frame;
+    private final JPanel panel;
+    private final JLabel label;
+    private final JButton btnDisconnect;
+    private final JButton btnChat;
+    private final DefaultListModel defaultListModel;
     private JList list;
-    private JScrollPane scrollPane;
+    private final JScrollPane scrollPane;
 
     private boolean disconnect;
+    private final I2PHandler i2pHandler;
 
-    public MainWindow() {
+    public MainWindow(I2PHandler i2pHandler) {
+        this.i2pHandler = i2pHandler;
+
         frame = new JFrame();
         panel = new JPanel();
         label = new JLabel("Select users to chat");
@@ -38,9 +41,10 @@ public class MainWindow {
 
         btnChat.addActionListener((ActionEvent e) -> {
             if (list.getSelectedIndices().length <= 0) {
-            }
-            else {
-                System.out.println(list.getSelectedValuesList());
+            } else if (list.getSelectedIndices().length == 1) {
+                ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), i2pHandler);
+                Thread thread = new Thread(chatWindow);
+                thread.start();
             }
         });
 
@@ -54,10 +58,10 @@ public class MainWindow {
             @Override
             public void keyReleased(KeyEvent ke) {
                 if (list.getSelectedIndices().length <= 0) {
-                    return;
-                }
-                if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
-                    System.out.println(list.getSelectedValuesList());
+                } else if (list.getSelectedIndices().length == 1 && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                    ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), i2pHandler);
+                    Thread thread = new Thread(chatWindow);
+                    thread.start();
                 }
             }
         });
@@ -73,16 +77,17 @@ public class MainWindow {
         frame.setVisible(true);
 
         disconnect = false;
+        
     }
-    
-    public void setList(List<Client> availableClients){
+
+    public void setList(List<Client> availableClients) {
         defaultListModel.clear();
-        for(int i = 0; i < availableClients.size(); i++){
-            defaultListModel.addElement(availableClients.get(i).getNickName());
+        for (int i = 0; i < availableClients.size(); i++) {
+            defaultListModel.addElement(availableClients.get(i));
         }
     }
-    
-    public boolean disconnectFromRegistar(){
+
+    public boolean disconnectFromRegistar() {
         return this.disconnect;
     }
 }
