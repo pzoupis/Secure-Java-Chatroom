@@ -9,7 +9,7 @@ import shared.SSLHandler;
 public class Registar {
     public static void main(String[] args) {
         System.out.println("Creating SSL Server Socket...");
-        SSLHandler sslHandler = new SSLHandler(5555);
+        SSLHandler sslHandler = new SSLHandler(443);
         System.out.println("Creating a list to store users...");
         ServerConnections connections = new ServerConnections();
         do{

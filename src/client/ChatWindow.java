@@ -45,57 +45,14 @@ public class ChatWindow implements Runnable{
     private ObjectInputStream inputStream;
     private Message message;
     
-    public ChatWindow(Client client, Client currentUser, I2PHandler i2pHandler, ObjectOutputStream outputStream, ObjectInputStream inputStream){
+    public ChatWindow(Client client, Client currentUser, ObjectOutputStream outputStream, ObjectInputStream inputStream){
         this.client = client;
         this.currentUser = currentUser;
-        this.i2pHandler = i2pHandler;
         this.outputStream = outputStream;
         this.inputStream = inputStream;
         
         createChatWindow();
         createActionListeners();
-    }
-    
-    public ChatWindow(Client client, Client currentUser, I2PHandler i2pHandler) {
-        this.client = client;
-        this.i2pHandler = i2pHandler;
-        this.currentUser = currentUser;
-        
-        createChatWindow();
-        createActionListeners();
-        
-        Destination destination;
-        try {
-            destination = new Destination(this.client.getI2PDestination());
-            socket = this.i2pHandler.getManager().connect(destination);
-            System.out.println("Connected with client " + client.getNickName());
-            System.out.println("Creating streams");
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-            inputStream = new ObjectInputStream(socket.getInputStream());
-            System.out.println("sending currentUser");
-            Message userInfo = new Message(this.currentUser.getNickName());
-            outputStream.writeObject(userInfo);
-            userInfo = (Message) inputStream.readObject();
-            if(userInfo.getMessage().equals("yes")){
-                userInfo.setMessage(this.currentUser.getI2PDestination());
-                outputStream.writeObject(userInfo);
-                outputStream.flush();
-            }
-        } catch (DataFormatException ex) {
-            System.err.println("Destination string incorrectly formatted.");
-        } catch (I2PException ex) {
-            System.err.println("General I2P exception occurred!");
-        } catch (ConnectException ex) {
-            System.err.println("Failed to connect!");
-        } catch (NoRouteToHostException ex) {
-            System.err.println("Couldn't find host!\n"+client.getI2PDestination());
-        } catch (InterruptedIOException ex) {
-            System.err.println("Sending/receiving was interrupted!");
-        } catch (IOException ex) {
-            System.err.println("Error occurred while sending/receiving!");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ChatWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     private void createChatWindow(){

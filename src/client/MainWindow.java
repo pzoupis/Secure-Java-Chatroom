@@ -66,9 +66,8 @@ public class MainWindow{
         btnChat.addActionListener((ActionEvent e) -> {
             if (list.getSelectedIndices().length <= 0) {
             } else if (list.getSelectedIndices().length == 1) {
-                ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), this.currentUser, i2pHandler);
-                Thread thread = new Thread(chatWindow);
-                thread.start();
+                UnicastMode unicastMode = new UnicastMode((Client) list.getSelectedValue(), currentUser, i2pHandler);
+            } else {
             }
         });
         btnDisconnect.addActionListener((ActionEvent e) -> {
@@ -79,9 +78,7 @@ public class MainWindow{
             public void keyReleased(KeyEvent ke) {
                 if (list.getSelectedIndices().length <= 0) {
                 } else if (list.getSelectedIndices().length == 1 && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-                    ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), currentUser, i2pHandler);
-                    Thread thread = new Thread(chatWindow);
-                    thread.start();
+                    UnicastMode unicastMode = new UnicastMode((Client) list.getSelectedValue(), currentUser, i2pHandler);
                 }
             }
         });
