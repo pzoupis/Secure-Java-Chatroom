@@ -5,32 +5,31 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import shared.Client;
 import shared.Message;
+import shared.SSLHandler;
 
 public class RegistarHandler implements Runnable{
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
-    private Client client;
+    private final Client currentUser;
     private Message message;
-    private final SSLClientHandler sslClientHandler;
+    private final SSLHandler sslHandler;
     private final I2PHandler i2pHandler;
     
-    public RegistarHandler(SSLClientHandler sslClientHandler, I2PHandler i2pHandler){
-        this.sslClientHandler = sslClientHandler;
+    public RegistarHandler(SSLHandler sslHandler, I2PHandler i2pHandler, Client currentUser){
+        this.sslHandler = sslHandler;
         this.i2pHandler = i2pHandler;
+        this.currentUser = currentUser;
     }
 
     @Override
     public void run() {
         try {
-            outputStream = new ObjectOutputStream(sslClientHandler.getSocket().getOutputStream());
-            inputStream = new ObjectInputStream(sslClientHandler.getSocket().getInputStream());
-            String nickName = JOptionPane.showInputDialog("Enter your nickname");
-            client = new Client(nickName, i2pHandler.getI2PDestination());
-            MainWindow mainWindow = new MainWindow(i2pHandler);
-            outputStream.writeObject(client);
+            outputStream = new ObjectOutputStream(sslHandler.getSocket().getOutputStream());
+            inputStream = new ObjectInputStream(sslHandler.getSocket().getInputStream());
+            MainWindow mainWindow = new MainWindow(i2pHandler, currentUser);
+            outputStream.writeObject(currentUser);
             message = (Message) inputStream.readObject();
             while(!mainWindow.disconnectFromRegistar()){
                 mainWindow.setList(message.getAvailableClients());
@@ -43,7 +42,7 @@ public class RegistarHandler implements Runnable{
             outputStream.writeObject(message);
             inputStream.close();
             outputStream.close();
-            sslClientHandler.getSSLSocket().close();
+            sslHandler.getSSLSocket().close();
             System.exit(0);
         } catch (IOException ex) {
             Logger.getLogger(RegistarHandler.class.getName()).log(Level.SEVERE, null, ex);

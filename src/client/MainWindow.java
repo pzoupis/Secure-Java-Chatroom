@@ -13,59 +13,42 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import shared.Client;
 
-public class MainWindow {
+public class MainWindow{
 
-    private final JFrame frame;
-    private final JPanel panel;
-    private final JLabel label;
-    private final JButton btnDisconnect;
-    private final JButton btnChat;
-    private final DefaultListModel defaultListModel;
+    private JFrame frame;
+    private JPanel panel;
+    private JLabel label;
+    private JButton btnDisconnect;
+    private JButton btnChat;
+    private DefaultListModel defaultListModel;
     private JList list;
-    private final JScrollPane scrollPane;
+    private JScrollPane scrollPane;
 
     private boolean disconnect;
     private final I2PHandler i2pHandler;
+    private final Client currentUser;
 
-    public MainWindow(I2PHandler i2pHandler) {
+    public MainWindow(I2PHandler i2pHandler, Client currentUser) {
         this.i2pHandler = i2pHandler;
-
+        this.currentUser = currentUser;
+        
+        createMainWindow();
+        createActionListeners();
+    }
+    
+    private void createMainWindow(){
         frame = new JFrame();
         panel = new JPanel();
-        label = new JLabel("Select users to chat");
+        label = new JLabel("Welcome " + this.currentUser.getNickName() + "\nSelect users to chat");
         btnChat = new JButton("Chat with users");
         btnDisconnect = new JButton("Disconnect from Registar");
         defaultListModel = new DefaultListModel();
         list = new JList(defaultListModel);
         scrollPane = new JScrollPane(list);
-
-        btnChat.addActionListener((ActionEvent e) -> {
-            if (list.getSelectedIndices().length <= 0) {
-            } else if (list.getSelectedIndices().length == 1) {
-                ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), i2pHandler);
-                Thread thread = new Thread(chatWindow);
-                thread.start();
-            }
-        });
-
-        btnDisconnect.addActionListener((ActionEvent e) -> {
-            this.disconnect = true;
-        });
-
+        
         list.setLayoutOrientation(JList.VERTICAL);
         list.setVisibleRowCount(10);
-        list.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent ke) {
-                if (list.getSelectedIndices().length <= 0) {
-                } else if (list.getSelectedIndices().length == 1 && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-                    ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), i2pHandler);
-                    Thread thread = new Thread(chatWindow);
-                    thread.start();
-                }
-            }
-        });
-
+        
         panel.add(label);
         panel.add(scrollPane);
         panel.add(btnChat);
@@ -77,9 +60,33 @@ public class MainWindow {
         frame.setVisible(true);
 
         disconnect = false;
-        
     }
-
+    
+    private void createActionListeners(){
+        btnChat.addActionListener((ActionEvent e) -> {
+            if (list.getSelectedIndices().length <= 0) {
+            } else if (list.getSelectedIndices().length == 1) {
+                ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), this.currentUser, i2pHandler);
+                Thread thread = new Thread(chatWindow);
+                thread.start();
+            }
+        });
+        btnDisconnect.addActionListener((ActionEvent e) -> {
+            this.disconnect = true;
+        });
+        list.addKeyListener(new KeyAdapter() { // πατώντας το κουμπή Enter επιλέγει τον χρήστη και ξεκινάει το chat
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                if (list.getSelectedIndices().length <= 0) {
+                } else if (list.getSelectedIndices().length == 1 && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                    ChatWindow chatWindow = new ChatWindow((Client) list.getSelectedValue(), currentUser, i2pHandler);
+                    Thread thread = new Thread(chatWindow);
+                    thread.start();
+                }
+            }
+        });
+    }
+    
     public void setList(List<Client> availableClients) {
         defaultListModel.clear();
         for (int i = 0; i < availableClients.size(); i++) {

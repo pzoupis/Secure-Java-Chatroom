@@ -1,6 +1,5 @@
 package client;
 
-
 import net.i2p.client.I2PSession;
 import net.i2p.client.streaming.I2PServerSocket;
 import net.i2p.client.streaming.I2PSocketManager;
@@ -13,10 +12,10 @@ public class I2PHandler {
     private final String i2pDestination;
     
     public I2PHandler(){
-        manager = I2PSocketManagerFactory.createManager();
-        serverSocket = manager.getServerSocket();
-        session = manager.getSession();
-        i2pDestination = session.getMyDestination().toBase64();
+        this.manager = I2PSocketManagerFactory.createManager();
+        this.serverSocket = manager.getServerSocket();
+        this.session = manager.getSession();
+        this.i2pDestination = session.getMyDestination().toBase64();
         System.err.println(i2pDestination);
     }
     
@@ -25,5 +24,8 @@ public class I2PHandler {
     }
     public I2PSocketManager getManager(){
         return this.manager;
+    }
+    public I2PServerSocket getI2PServerSocket(){
+        return this.serverSocket;
     }
 }

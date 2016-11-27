@@ -11,24 +11,29 @@ import javax.net.ssl.SSLSocket;
 import shared.Client;
 import shared.Message;
 
-public class UserHandler implements Runnable{
+public class UserHandler implements Runnable {
+
     private final SSLSocket sslSocket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private Message message;
     private Client client;
     private ServerConnections connections;
-    
-    public UserHandler(SSLSocket sslSocket, ServerConnections connections){
+
+    public UserHandler(SSLSocket sslSocket, ServerConnections connections) {
         this.sslSocket = sslSocket;
         this.connections = connections;
-    }
-    
-    @Override
-    public void run() {
         try {
             outputStream = new ObjectOutputStream(sslSocket.getOutputStream());
             inputStream = new ObjectInputStream(sslSocket.getInputStream());
+        } catch (IOException ex) {
+            Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
             client = (Client) inputStream.readObject();
             connections.addClient(client);
             System.out.println("User " + client.getNickName() + " entered the chatroom with I2P Destination: \n" + client.getI2PDestination());
@@ -37,17 +42,18 @@ public class UserHandler implements Runnable{
             message.setMessageType("availableClients");
             message.setAvailableClients(connections.getAvailableClients());
             outputStream.writeObject(message);
-            do{
+            do {
                 message = (Message) inputStream.readObject();
-                if(!message.getMessageType().equals("disconnect")){
-                    if(!message.getAvailableClients().equals(connections.getAvailableClients())){
+                if (!message.getMessageType().equals("disconnect")) {
+                    if (!message.getAvailableClients().equals(connections.getAvailableClients())) {
                         List<Client> tempList = new ArrayList<>(connections.getAvailableClients());
+                        tempList.remove(client);
                         message.setAvailableClients(tempList);
                         message.setMessageType("newAvailableClients");
                     }
                     outputStream.writeObject(message);
                 }
-            }while(!message.getMessageType().equals("disconnect"));
+            } while (!message.getMessageType().equals("disconnect"));
             connections.deleteClient(client);
             System.out.println("User " + client.getNickName() + " disconnected.");
             outputStream.close();
