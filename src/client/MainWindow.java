@@ -68,6 +68,7 @@ public class MainWindow{
             } else if (list.getSelectedIndices().length == 1) {
                 UnicastMode unicastMode = new UnicastMode((Client) list.getSelectedValue(), currentUser, i2pHandler);
             } else {
+                MulticastMode multicastMode = new MulticastMode(list.getSelectedValuesList(), currentUser, i2pHandler);
             }
         });
         btnDisconnect.addActionListener((ActionEvent e) -> {
@@ -79,6 +80,8 @@ public class MainWindow{
                 if (list.getSelectedIndices().length <= 0) {
                 } else if (list.getSelectedIndices().length == 1 && ke.getKeyCode() == KeyEvent.VK_ENTER) {
                     UnicastMode unicastMode = new UnicastMode((Client) list.getSelectedValue(), currentUser, i2pHandler);
+                } else {
+                    MulticastMode multicastMode = new MulticastMode(list.getSelectedValuesList(), currentUser, i2pHandler);
                 }
             }
         });
