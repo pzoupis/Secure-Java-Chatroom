@@ -20,6 +20,10 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
+/**
+ * This class handles the TLS connection between a server and a client.
+ * @author Pantelis Zoupis, pantelis.zoupis at gmail.com
+ */
 public class SSLHandler {
 
     private String keyStoreName;
@@ -36,7 +40,16 @@ public class SSLHandler {
     private SSLSocketFactory sslSocketFactory;
     private SSLSocket sslSocket;
     private Socket socket;
-
+    
+    /**
+     * Constructor for the server.
+     * In order to create a {@code SSLSocket} we need a {@code SSLSocketFactory} which can be
+     * created with a {@code SSLContext}. The {@code SSLContext} needs {@code KeyManagerFactory}
+     * which determines which key to use from the {@code KeyStore} and a {@code TrustManagerFactory}
+     * which determines which certificate to use.
+     * 
+     * @param serverPort the port that the server listens to.
+     */
     public SSLHandler(int serverPort) { // Για τον server
         try {
             keyStoreName = "serverFiles\\server.jks";
@@ -68,6 +81,14 @@ public class SSLHandler {
             Logger.getLogger(SSLHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    /**
+     * Constructor for the client.
+     * The client is using server's {@code serverIP} and {@code serverPort} to
+     * create a {@code SSLSocket} and starts the handshake.
+     * @param serverIP the server's IP address.
+     * @param serverPort the port that server listens to.
+     */
     public SSLHandler(String serverIP, int serverPort){ // για τον client
         try {
             System.setProperty("javax.net.ssl.trustStore", "clientFiles\\public.jks");
@@ -82,12 +103,26 @@ public class SSLHandler {
         }
     }
     
+    /**
+     * Method that returns server's {@code SSLServerSocket}
+     * @return the ssl server socket
+     */
     public SSLServerSocket getSSLServerSocket(){
         return this.sslServerSocket;
     }
+    
+    /**
+     * Method that returns client's {@code SSLSocket}
+     * @return the ssl socket of the client
+     */
     public SSLSocket getSSLSocket(){
         return this.sslSocket;
     }
+    
+    /**
+     * Method that returns client's {@code Socket}
+     * @return the socket of the client
+     */
     public Socket getSocket(){
         return this.socket;
     }

@@ -6,6 +6,15 @@ import java.util.logging.Logger;
 import javax.net.ssl.SSLSocket;
 import shared.SSLHandler;
 
+/**
+ * The main class for the Registar.
+ * {@code SSLHandler} creates the {@code SSLServerSocket} which is used in a loop
+ * and listens for connections.
+ * {@code ServerConnections} creates a list to store the users that connect with
+ * the server.
+ * {@code UserHandler} is a thread that handles every user in the chatroom.
+ * @author Pantelis Zoupis, pantelis.zoupis at gmail.com
+ */
 public class Registar {
     public static void main(String[] args) {
         System.out.println("Creating SSL Server Socket...");

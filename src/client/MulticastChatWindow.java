@@ -90,7 +90,7 @@ public class MulticastChatWindow implements Runnable {
         });
         btnSend.addActionListener((ActionEvent e) -> {
             try {
-                message = new Message(textField.getText());
+                message = new Message("chatmessage", textField.getText());
                 for (ObjectOutputStream outputStream : outputStreams) {
                     outputStream.writeObject(message);
                     outputStream.flush();
@@ -103,7 +103,7 @@ public class MulticastChatWindow implements Runnable {
         });
         textField.addActionListener((e) -> {
             try {
-                message = new Message(textField.getText());
+                message = new Message("chatmessage", textField.getText());
                 for (ObjectOutputStream outputStream : outputStreams) {
                     outputStream.writeObject(message);
                     outputStream.flush();

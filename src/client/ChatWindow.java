@@ -82,7 +82,7 @@ public class ChatWindow implements Runnable{
         });
         btnSend.addActionListener((ActionEvent e) -> {
             try {
-                message = new Message(textField.getText());
+                message = new Message("chatmessage", textField.getText());
                 outputStream.writeObject(message);
                 outputStream.flush();
                 textArea.append(this.currentUser.getNickName() + ": " + textField.getText() + "\n");
@@ -93,7 +93,7 @@ public class ChatWindow implements Runnable{
         });
         textField.addActionListener((e) -> {
             try {
-                message = new Message(textField.getText());
+                message = new Message("chatmessage", textField.getText());
                 outputStream.writeObject(message);
                 outputStream.flush();
                 textArea.append(this.currentUser.getNickName() + ": " + textField.getText() + "\n");
