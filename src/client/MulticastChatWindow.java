@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -17,7 +18,7 @@ import javax.swing.JTextField;
 import shared.Client;
 import shared.Message;
 
-public class ChatWindow implements Runnable{
+public class MulticastChatWindow implements Runnable{
 
     private JFrame frame;
     private JPanel panel;
@@ -28,14 +29,14 @@ public class ChatWindow implements Runnable{
     private JButton btnSend;
     private JButton btnCloseChat;
     
-    private final Client client;
+    private final List<Client> clients;
     private final Client currentUser;
     private final ObjectOutputStream outputStream;
     private final ObjectInputStream inputStream;
     private Message message;
     
-    public ChatWindow(Client client, Client currentUser, ObjectOutputStream outputStream, ObjectInputStream inputStream){
-        this.client = client;
+    public MulticastChatWindow(List<Client> clients, Client currentUser, ObjectOutputStream outputStream, ObjectInputStream inputStream){
+        this.clients = clients;
         this.currentUser = currentUser;
         this.outputStream = outputStream;
         this.inputStream = inputStream;
