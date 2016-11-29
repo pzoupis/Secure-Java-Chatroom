@@ -11,6 +11,11 @@ import net.i2p.client.streaming.I2PSocket;
 import shared.Client;
 import shared.Message;
 
+/**
+ * A class that implements Runnable and is being used to listen for new connection
+ * from the I2P network. 
+ * @author Pantelis Zoupis, pantelis.zoupis at gmail.com
+ */
 public class ListeningForConnections implements Runnable {
     
     private final I2PHandler i2pHandler;
@@ -21,11 +26,20 @@ public class ListeningForConnections implements Runnable {
     private Client client;
     private boolean accepted;
     
+    /**
+     * Constructs and initializes an object with information about the user.
+     * @param i2pHandler the user's I2P destination and server socket.
+     * @param currentUser the user's name and address.
+     */
     public ListeningForConnections(I2PHandler i2pHandler, Client currentUser){
         this.i2pHandler = i2pHandler;
         this.currentUser = currentUser;
     }
     
+    /**
+     * Method that listens for a connection in the I2P network and creates
+     * output and input streams.
+     */
     private void connectWithClient(){
         try {
             i2pSocket = this.i2pHandler.getI2PServerSocket().accept();
@@ -44,6 +58,14 @@ public class ListeningForConnections implements Runnable {
         }
     }
     
+    /**
+     * Method that implements a protocol in which the user that wants to connect
+     * sents the nickname. Then the current user is prompt with a question that
+     * asks whether he wants to chat or not. If the current user accepts, sents
+     * a confirmation message on the other user. If the answer is yes then the
+     * current user gets the other users I2P destination in order to connect with
+     * him. Otherwise the streams and sockets close.
+     */
     private void connectionProtocol(){
         try {
             Message message;
@@ -86,6 +108,10 @@ public class ListeningForConnections implements Runnable {
             System.err.println("Class not found");
         }
     }
+    
+    /**
+     * If the current user agree to chat then a chat window is created.
+     */
     private void startChat(){
         if(accepted){
             ChatWindow chatWindow = new ChatWindow(this.client, this.currentUser, this.outputStream, this.inputStream);
@@ -93,6 +119,11 @@ public class ListeningForConnections implements Runnable {
             thread.start();
         }
     }
+    
+    /**
+     * The above methods run in a loop so that more than one users can request a
+     * connection with the current user.
+     */
     @Override
     public void run() {
         while(true){

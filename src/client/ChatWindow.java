@@ -17,6 +17,11 @@ import javax.swing.JTextField;
 import shared.Client;
 import shared.Message;
 
+/**
+ * The class that represents the chat window of the application. It creates the
+ * window and adds the functionality.
+ * @author Pantelis Zoupis, pantelis.zoupis at gmail.com
+ */
 public class ChatWindow implements Runnable{
 
     private JFrame frame;
@@ -34,6 +39,15 @@ public class ChatWindow implements Runnable{
     private final ObjectInputStream inputStream;
     private Message message;
     
+    /**
+     * Constructs and initializes an object that has the names of the users chatting
+     * and the output and input streams. Also it creates the window and adds
+     * listeners to some components of the window.
+     * @param client
+     * @param currentUser
+     * @param outputStream
+     * @param inputStream 
+     */
     public ChatWindow(Client client, Client currentUser, ObjectOutputStream outputStream, ObjectInputStream inputStream){
         this.client = client;
         this.currentUser = currentUser;
@@ -44,6 +58,9 @@ public class ChatWindow implements Runnable{
         createActionListeners();
     }
     
+    /**
+     * Method that creates the window.
+     */
     private void createChatWindow(){
         frame = new JFrame();
         panel = new JPanel();
@@ -71,6 +88,11 @@ public class ChatWindow implements Runnable{
         frame.setVisible(true);
     }
     
+    /**
+     * Method that adds listeners to the buttons and the textfield.
+     * When the user press enter in the textfield he sents the message to the other
+     * user.
+     */
     private void createActionListeners(){
         btnCloseChat.addActionListener((e) -> {
             try {
@@ -103,7 +125,11 @@ public class ChatWindow implements Runnable{
             }
         });
     }
-
+    
+    /**
+     * In this method the user listens for incoming messages appends them in the
+     * TextArea.
+     */
     @Override
     public void run() {
         try {

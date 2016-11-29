@@ -9,6 +9,12 @@ import shared.Client;
 import shared.Message;
 import shared.SSLHandler;
 
+/**
+ * Class in which the user communicates with the Registar.
+ * Here we create input and output streams, the main application window which
+ * lists the available users and every time a heartbeat is sent the list gets refreshed.
+ * @author Pantelis Zoupis, pantelis.zoupis at gmail.com
+ */
 public class RegistarHandler implements Runnable{
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
@@ -17,12 +23,24 @@ public class RegistarHandler implements Runnable{
     private final SSLHandler sslHandler;
     private final I2PHandler i2pHandler;
     
+    /**
+     * Constructs and initializes an object with information about the user that
+     * are useful for the registar.
+     * @param sslHandler object that contains the client's socket.
+     * @param i2pHandler object that contains the client's I2P information.
+     * @param currentUser object that contains the client's nickname and I2P destination
+     */
     public RegistarHandler(SSLHandler sslHandler, I2PHandler i2pHandler, Client currentUser){
         this.sslHandler = sslHandler;
         this.i2pHandler = i2pHandler;
         this.currentUser = currentUser;
     }
-
+    
+    /**
+     * A thread in which the streams and main window are created. Also, inside
+     * a loop the user sents a heartbeat and receives a list with available users
+     * and refreshes his list in the main window.
+     */
     @Override
     public void run() {
         try {

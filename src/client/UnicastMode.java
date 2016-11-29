@@ -13,6 +13,12 @@ import net.i2p.data.Destination;
 import shared.Client;
 import shared.Message;
 
+/**
+ * When a one user is selected for chat then an object of this class is created.
+ * It handles the connection with that user and checks whether the connection
+ * protocol is correct and the user wants to chat.
+ * @author Pantelis Zoupis, pantelis.zoupis at gmail.com
+ */
 public class UnicastMode {
 
     private final Client client;
@@ -23,7 +29,15 @@ public class UnicastMode {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private boolean accepted;
-
+    
+    /**
+     * Constructs and initializes an object which has essential information about
+     * the users that are about to chat. Also it handles the connection, connection
+     * protocol and starts the chat window.
+     * @param client
+     * @param currentUser
+     * @param i2pHandler 
+     */
     public UnicastMode(Client client, Client currentUser, I2PHandler i2pHandler) {
         this.client = client;
         this.currentUser = currentUser;
@@ -33,7 +47,11 @@ public class UnicastMode {
         connectionProtocol();
         startChat();
     }
-
+    
+    /**
+     * Method that connects the current user with the user and creates input and
+     * output streams.
+     */
     private void connectWithClient() {
         try {
             destination = new Destination(this.client.getI2PDestination());
@@ -54,7 +72,12 @@ public class UnicastMode {
             System.err.println("Error occurred while sending/receiving!");
         }
     }
-
+    
+    /**
+     * Method that implements the connection protocol in which the current user
+     * sents his nickname. If the other user accepts the request for chat then the
+     * current user also sents his I2P destination.
+     */
     private void connectionProtocol() {
         try {
             Message message = new Message("nickname", currentUser.getNickName());
@@ -85,7 +108,11 @@ public class UnicastMode {
             System.err.println("Class not found");
         }
     }
-
+    
+    /**
+     * Method that if the other user accept the request to chat, a chat window is
+     * created.
+     */
     private void startChat() {
         if (accepted) {
             ChatWindow chatWindow = new ChatWindow(this.client, this.currentUser, this.outputStream, this.inputStream);

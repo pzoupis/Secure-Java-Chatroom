@@ -13,6 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import shared.Client;
 
+/**
+ * This is the main window of the application. It has a list with the available
+ * users for the current user to choose from in order to chat.
+ * @author Pantelis Zoupis, pantelis.zoupis at gmail.com
+ */
 public class MainWindow{
 
     private JFrame frame;
@@ -27,7 +32,15 @@ public class MainWindow{
     private boolean disconnect;
     private final I2PHandler i2pHandler;
     private final Client currentUser;
-
+    
+    /**
+     * Constructs and initializes an object with information about the user.
+     * We also call the method {@code createMainWindow()} to create the main window
+     * and {@code createActionListeners()} that creates listeners for the components
+     * in the main window.
+     * @param i2pHandler I2P information about the user.
+     * @param currentUser The nickname and destination of the user.
+     */
     public MainWindow(I2PHandler i2pHandler, Client currentUser) {
         this.i2pHandler = i2pHandler;
         this.currentUser = currentUser;
@@ -36,6 +49,9 @@ public class MainWindow{
         createActionListeners();
     }
     
+    /**
+     * Method that creates the main window.
+     */
     private void createMainWindow(){
         frame = new JFrame();
         panel = new JPanel();
@@ -62,6 +78,13 @@ public class MainWindow{
         disconnect = false;
     }
     
+    /**
+     * Method that creates the listeners for the components of the main window.
+     * If the current user select users from the list he can chat with them by
+     * pressing the button "Chat with users" or by pressing the button "Enter"
+     * on the keyboard. The user can press the button "Disconnect from Registar"
+     * to disconnect from the Registar and terminate the application.
+     */
     private void createActionListeners(){
         btnChat.addActionListener((ActionEvent e) -> {
             if (list.getSelectedIndices().length <= 0) {
@@ -74,7 +97,7 @@ public class MainWindow{
         btnDisconnect.addActionListener((ActionEvent e) -> {
             this.disconnect = true;
         });
-        list.addKeyListener(new KeyAdapter() { // πατώντας το κουμπή Enter επιλέγει τον χρήστη και ξεκινάει το chat
+        list.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent ke) {
                 if (list.getSelectedIndices().length <= 0) {
@@ -87,13 +110,21 @@ public class MainWindow{
         });
     }
     
+    /**
+     * Method that refreshes the list with the available users.
+     * @param availableClients 
+     */
     public void setList(List<Client> availableClients) {
         defaultListModel.clear();
         for (int i = 0; i < availableClients.size(); i++) {
             defaultListModel.addElement(availableClients.get(i));
         }
     }
-
+    
+    /**
+     * Method that becomes true if the user wants to exit the application. Otherwise it's false.
+     * @return {@code true} if the user wants to disconnect. Otherwise it returns {@code false}.
+     */
     public boolean disconnectFromRegistar() {
         return this.disconnect;
     }
